@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 final _auth =FirebaseAuth.instance;
 final _fireStore = Firestore.instance;
 FirebaseUser loggedUser;
-
+int id=1;
 
 class ToDo extends StatefulWidget {
   @override
@@ -96,12 +96,14 @@ class _ToDoState extends State<ToDo> {
                               setState(() {
                                 messageTextController1.text.isEmpty ? _validate = true : _validate = false;
                                 messageTextController2.text.isEmpty ? _validate = true : _validate = false;
+                                id=id+1;
                               });
                             if(_validate==false){
                               _fireStore.collection('ToDo').document().setData({
                                 'taskTitle':taskTitle,
                                 'taskDesc':taskDesc,
                                 'sender':loggedUser.email,
+                                'id':id,
                               });
                               messageTextController1.clear();
                               messageTextController2.clear();

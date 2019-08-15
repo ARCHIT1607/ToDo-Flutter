@@ -42,9 +42,18 @@ class _ToDoState extends State<ToDo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Center(child: Text('ToDo')),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: (){
+              _auth.signOut();
+              Navigator.pop(context);
+            }),
+      ),
       body: SafeArea(
           child:Padding(
-            padding: const EdgeInsets.all(18.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
                 Row(
@@ -88,7 +97,7 @@ class _ToDoState extends State<ToDo> {
                               });
                               messageTextController1.clear();
                               messageTextController2.clear();
-                              print('done');
+
                             },
                             child: Icon(Icons.add),
                         ),
@@ -117,16 +126,21 @@ class ToDoList extends StatelessWidget {
               child: ListView(
                 reverse: true,
                 children:snapshot.data.documents.reversed.map((document){
-                  return ListTile(
-                    title: Text(document['taskTitle']),
-                    subtitle: Text(document['taskDesc']),
-                    trailing: IconButton(
-                        icon: Icon(Icons.close),
-                        onPressed:(){
-                          _fireStore.collection('ToDo').document(document.documentID).delete();
-                        }
-                        ),
-                  );
+                  if(loggedUser.email==document['sender']){
+                    return ListTile(
+                      title: Text(document['taskTitle']),
+                      subtitle: Text(document['taskDesc']),
+                      trailing: IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed:()async{
+                            if(loggedUser.email==document['sender']){
+                              _fireStore.collection('ToDo').document(document.documentID).delete();
+                            }
+                          }
+                      ),
+                    );
+                  }
+                  return Visibility(visible: false,child: Text(''));
                 }).toList(),
               ),
             )

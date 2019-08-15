@@ -17,6 +17,7 @@ class _ToDoState extends State<ToDo> {
   String taskDesc;
   final messageTextController1 = TextEditingController();
   final messageTextController2 = TextEditingController();
+  bool _validate =false;
 
   @override
   void initState() {
@@ -68,6 +69,7 @@ class _ToDoState extends State<ToDo> {
                           textAlign: TextAlign.center,
                           decoration: InputDecoration(
                             hintText: 'Enter your title',
+                            errorText: _validate?'Value Can\'t Be Empty':null,
                           ),
                         ),
                     ),
@@ -84,12 +86,18 @@ class _ToDoState extends State<ToDo> {
                         textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           hintText: 'Enter your task ',
+                          errorText: _validate?'Value Can\'t Be Empty':null,
                         ),
                       ),
                     ),
                     Expanded(
                         child: FlatButton(
                             onPressed: (){
+                              setState(() {
+                                messageTextController1.text.isEmpty ? _validate = true : _validate = false;
+                                messageTextController2.text.isEmpty ? _validate = true : _validate = false;
+                              });
+                            if(_validate==false){
                               _fireStore.collection('ToDo').document().setData({
                                 'taskTitle':taskTitle,
                                 'taskDesc':taskDesc,
@@ -97,7 +105,10 @@ class _ToDoState extends State<ToDo> {
                               });
                               messageTextController1.clear();
                               messageTextController2.clear();
-
+                            }
+                            else{
+                              return null;
+                            }
                             },
                             child: Icon(Icons.add),
                         ),

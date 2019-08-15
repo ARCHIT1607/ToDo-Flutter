@@ -90,16 +90,49 @@ class _ToDoState extends State<ToDo> {
                               messageTextController2.clear();
                               print('done');
                             },
-
                             child: Icon(Icons.add),
                         ),
                     ),
                   ],
                 ),
-                //Display your todo list
+                ToDoList(),
               ],
             ),
           ) ),
     );
   }
 }
+
+class ToDoList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _fireStore.collection('ToDo').snapshots(),
+      builder: (context,snapshot){
+        if(!snapshot.hasData){
+          return Center(child: Text('Loading'),);
+        }
+        return Expanded(
+            child:Container(
+              child: ListView(
+                reverse: true,
+                children:snapshot.data.documents.reversed.map((document){
+                  return ListTile(
+                    title: Text(document['taskTitle']),
+                    subtitle: Text(document['taskDesc']),
+                    trailing: IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed:(){
+                          _fireStore.collection('ToDo').document(document.documentID).delete();
+                        }
+                        ),
+                  );
+                }).toList(),
+              ),
+            )
+        );
+      },
+    );
+  }
+}
+

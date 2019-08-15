@@ -16,9 +16,6 @@ class MyApp extends StatelessWidget {
       initialRoute: 'HomeScreen.id',
       routes: {
         'HomeScreen.id':(context)=>HomeScreen(),
-        'RegistrationScreen.id':(context)=>RegistrationScreen(),
-        'LoginScreen.id':(context)=>LoginScreen(),
-        'ToDoScreen.id':(context)=>ToDo(),
       },
       home: Scaffold(),
       debugShowCheckedModeBanner: false,
